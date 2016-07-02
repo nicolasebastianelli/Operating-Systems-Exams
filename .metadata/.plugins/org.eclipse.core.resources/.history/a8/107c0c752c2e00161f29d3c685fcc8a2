@@ -1,0 +1,94 @@
+package esamejava20120628;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Main {
+	private Lock lock = new ReentrantLock();
+	private Condition oo = lock.newCondition();
+	private Condition oe = lock.newCondition();
+	private Condition eo = lock.newCondition();
+	private Condition ee = lock.newCondition();
+	private Condition operaio = lock.newCondition();
+	private int sosp_oo = 0;
+	private int sosp_oe = 0;
+	private int sosp_eo = 0;
+	private int sosp_ee = 0;
+	private int maxTerrazza;
+	private int nTerrazza=0;
+	public Main(int maxTerrazza) {
+		super();
+		this.maxTerrazza = maxTerrazza;
+	}
+	
+	public void daOvestTrattoO(int id) throws InterruptedException{
+		Boolean fine = false;
+		lock.lock();
+		try{
+			while (!fine) {
+			if(sosp_eo!=0||maxTerrazza==nTerrazza){
+				System.out.println("[Visistatore "+id+"]: Sospeso (da Ovest tratto O ");
+				sosp_oo++;
+				oo.await();
+				sosp_oo--;
+			}
+			else{
+				fine=true;
+				nTerrazza++;
+				System.out.println("[Visitatore "+id+"]: Entrato nella terrazza (dal tratto O");
+			}
+			}
+		}finally{lock.unlock();}
+	}
+	
+	public void daOvestTrattoE(int id) throws InterruptedException{
+		Boolean fine = false;
+		lock.lock();
+		try{
+				fine=true;
+				nTerrazza--;
+				System.out.println("[Visitatore "+id+"]: Entrato nella terrazza (dal tratto O");
+			}finally{lock.unlock();}
+	}
+	
+	public void daEstTrattoO(int id) throws InterruptedException{
+		Boolean fine = false;
+		lock.lock();
+		try{
+			while (!fine) {
+			if(sosp_eo!=0||maxTerrazza==nTerrazza){
+				System.out.println("[Visistatore "+id+"]: Sospeso (da Ovest tratto O ");
+				sosp_oo++;
+				oo.await();
+				sosp_oo--;
+			}
+			else{
+				fine=true;
+				nTerrazza++;
+				System.out.println("[Visitatore "+id+"]: Entrato nella terrazza (dal tratto O");
+			}
+			}
+		}finally{lock.unlock();}
+	}
+	
+	public void daEstTrattoE(int id) throws InterruptedException{
+		Boolean fine = false;
+		lock.lock();
+		try{
+			while (!fine) {
+			if(sosp_eo!=0||maxTerrazza==nTerrazza){
+				System.out.println("[Visistatore "+id+"]: Sospeso (da Ovest tratto O ");
+				sosp_oo++;
+				oo.await();
+				sosp_oo--;
+			}
+			else{
+				fine=true;
+				nTerrazza++;
+				System.out.println("[Visitatore "+id+"]: Entrato nella terrazza (dal tratto O");
+			}
+			}
+		}finally{lock.unlock();}
+	}
+}

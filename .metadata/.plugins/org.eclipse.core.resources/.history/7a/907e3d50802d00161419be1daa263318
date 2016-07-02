@@ -1,0 +1,42 @@
+package esamejava20120713;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Cesto {
+	private Lock lock = new ReentrantLock();
+	private Condition d1= lock.newCondition();
+	private Condition d2 = lock.newCondition();
+	private Condition s1 = lock.newCondition();
+	private Condition s2 = lock.newCondition();
+	private Condition operaio = lock.newCondition();
+	private int sosp_d1 = 0;
+	private int sosp_d2 = 0;
+	private int sosp_s1 = 0;
+	private int sosp_s2 = 0;
+	private int maxCesto;
+	private final static int DESTRO = 1;
+	private final static int SINISTRO = 2;
+	private final static int MISURA1 = 1;
+	private final static int MISURA2 = 2;
+	
+	public Cesto(int maxCesto) {
+		super();
+		this.maxCesto = maxCesto;
+	}
+	
+	public void inserisci(int piede, int misura) throws InterruptedException
+	{
+		Boolean fine= false;
+		lock.lock();
+		try{
+			while(!fine)
+			{
+				
+			}
+		} finally {lock.unlock();}
+	}
+	
+	
+}

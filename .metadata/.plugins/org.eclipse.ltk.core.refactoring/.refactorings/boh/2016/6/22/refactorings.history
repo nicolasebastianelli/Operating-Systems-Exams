@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;esercizio11.2/lancia.c&apos; to &apos;lancia2.c&apos;" description="Rename resource &apos;lancia.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="lancia.c" name="lancia2.c" stamp="1464789161583" updateReferences="true"/>
+</session>

@@ -1,0 +1,8 @@
+package esamejava20150713;
+
+public class Piatti extends Thread{
+	
+	private Barbeque b;
+	private int id;
+
+}

@@ -1,0 +1,19 @@
+package esamejava20150713;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Barbeque {
+	private Lock lock = new ReentrantLock();
+	private Condition pn = lock.newCondition();
+	private Condition psg = lock.newCondition();
+	private Condition inserviente = lock.newCondition();
+	private int sosp_pn = 0;
+	private int sosp_psg = 0;
+	private int sosp_inserviente = 0;
+	private int maxCesto;
+	private int nCestod1 = 0, nCestod2 = 0, nCestos1 = 0, nCestos2 = 0;
+	private final static int PN = 1;
+	private final static int PSG = 0;
+}

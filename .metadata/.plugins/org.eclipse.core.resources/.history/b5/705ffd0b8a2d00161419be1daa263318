@@ -1,0 +1,20 @@
+package esamejava20120713;
+
+public class Main {
+	final static int n = 10;
+	final static int max = 50;
+
+	public static void main(String args[]) {
+		System.out.println("***************** AVVIO ESECUZIONE *****************");
+		Cesto cesto = new Cesto(max);
+		Calzolaio []calzolaio = new Calzolaio[n];
+		Operaio operaio = new Operaio(cesto);
+		for(int i =0 ;i<n;i++){
+			calzolaio[i] = new Calzolaio(cesto, i);
+		}
+		for(int i =0 ;i<n;i++){
+			calzolaio[i].start();
+		}
+		operaio.start();
+	}		
+}

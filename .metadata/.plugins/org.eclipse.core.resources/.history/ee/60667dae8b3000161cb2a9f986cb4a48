@@ -1,0 +1,78 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+
+#define READ 0
+#define WRITE 1
+#define C2 "Paola"
+#define C2 "Roberta"
+#define C2 "Massimo"
+#define C2 "Luca"
+int fdo;
+int main(int argc, char* argv[]) {
+	int fdi, votinulli=0,fdpipe[2],pid1,pid2;
+	if (argc != 3) {
+			fprintf(stderr, "Numero di argomenti errato\n");
+			exit(EXIT_FAILURE);
+		}
+	if (argv[1][0] != '/') {
+			fprintf(stderr, "file input non è un path assoluto\n");
+			exit(EXIT_FAILURE);
+		}
+	if (argv[2][0] != '/') {
+			fprintf(stderr, "file output non è un path assoluto\n");
+			exit(EXIT_FAILURE);
+		}
+	if ((fdi = open(argv[1], O_RDONLY)) < 0) {
+			fprintf(stderr, "errore nell'apertura di file input\n");
+			exit(EXIT_FAILURE);
+		}
+	if ((fdo = open(argv[2], O_RDWR | O_CREAT | O_TRUNC, 0755)) < 0) {
+			fprintf(stderr, "errore nell'apertura di file output\n");
+			exit(EXIT_FAILURE);
+		}
+	if (pipe(fdpipe) != 0) {
+				fprintf(stderr, "errore nella creazione della pipe\n");
+				exit(EXIT_FAILURE);
+			}
+	pid1 = fork();
+	if(pid1==0) //figlio1
+	{
+		close(fdpipe[READ]);
+		close(1);
+		dup(fdpipe[READ]);
+		execlp("cut","cut","-f1","-d","';'",argv[1],(char*) 0);
+		exit(0);
+	}
+	else if (pid1>0) //padre
+	{
+		pid2=fork();
+		if(pid2==0) //figlio2
+			{
+			close(fdpipe[WRITE]);
+			}
+			else if (pid2>0) //padre
+			{
+				close(fdpipe[READ]);
+				close(fdpipe[WRITE]);
+				pause();
+			}
+			else{  //errore
+				fprintf(stderr, "errore nella fork 1\n");
+							exit(EXIT_FAILURE);
+				}
+
+	}
+	else{  //errore
+		fprintf(stderr, "errore nella fork 2\n");
+					exit(EXIT_FAILURE);
+	}
+
+	return 0;
+
+}

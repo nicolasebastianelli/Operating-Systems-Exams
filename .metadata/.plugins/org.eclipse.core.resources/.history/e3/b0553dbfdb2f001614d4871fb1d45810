@@ -1,0 +1,21 @@
+package esamejava20110628;
+
+public class Gruppi extends Thread{
+	private Spogliatoio s;
+	private int id;
+	
+	public Gruppi(Spogliatoio s, int id) {
+		super();
+		this.s = s;
+		this.id = id;
+	}
+	
+	public void run() {
+		while(true)
+		{
+			
+		}
+	}
+	
+
+}

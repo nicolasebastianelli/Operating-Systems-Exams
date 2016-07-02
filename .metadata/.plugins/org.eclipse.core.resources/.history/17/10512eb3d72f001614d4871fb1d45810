@@ -1,0 +1,87 @@
+package esamejava20110628;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Spogliatoio {
+	private Lock lock = new ReentrantLock();
+	private Condition su = lock.newCondition();
+	private Condition sd = lock.newCondition();
+	private Condition g = lock.newCondition();
+	private int sosp_su = 0;
+	private int sosp_sd = 0;
+	private int sosp_g = 0;
+	private int maxspoglia;
+	private int maxcabine;
+	private int ncabine = 0;
+	private int nspoglia=0;
+	private int occU = 0;
+	private int occD = 0;
+	private int occG = 0;
+	
+	
+	public Spogliatoio(int max, int cabine) {
+		super();
+		this.maxspoglia = max;
+		this.maxcabine = cabine;
+	}
+	
+	public void entraS(int genere) throws InterruptedException
+	{
+		Boolean fine = false;
+		lock.lock();
+		try {
+			while (!fine) {
+				if(genere == 1)
+				{
+					if(occD> 0||occG > 0 || sosp_sd >0 || sosp_g>0 || nspoglia ==maxspoglia || ncabine== maxcabine )
+					{
+						sosp_su++;
+						su.await();
+						sosp_su--;
+					}
+					else
+					{
+						occU++;
+						ncabine++;
+						nspoglia++;
+						fine=true;
+					}
+				}
+				else
+				{
+					if(occG > 0 || sosp_g>0 || nspoglia ==maxspoglia || ncabine== maxcabine )
+					{
+						sosp_su++;
+						su.await();
+						sosp_su--;
+					}
+					else
+					{
+						occD++;
+						ncabine++;
+						nspoglia++;
+						fine=true;
+					}
+				}
+			}
+		} finally{lock.unlock();}
+	}
+	
+	public void esceS(int genere)
+	{
+		
+	}
+	
+	public void entraG(int numerog)
+	{
+		
+	}
+	
+	public void esceG(int numerog)
+	{
+		
+	}
+	
+}

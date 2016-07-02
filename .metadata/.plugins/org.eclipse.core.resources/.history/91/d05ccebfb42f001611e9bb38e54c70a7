@@ -1,0 +1,106 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+
+#define READ 0
+#define WRITE 1
+
+void handlerp1(int sig);
+int count = 0;
+int main(int argc, char* argv[]) {
+	char buff[81];
+	int fdi, fdo, pid0, pid1, pid2, fdpipe[2];
+	printf("[%d]: Inizio esecuzione\n\n", getpid());
+	if (argc != 5) {
+		fprintf(stderr, "Numero di argomenti errato\n");
+		exit(EXIT_FAILURE);
+	}
+	if (argv[1][0] != '/') {
+		fprintf(stderr, "Filein con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	if (argv[2][0] != '/') {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((fdi = open(argv[1], O_RDONLY)) < 0) {
+		fprintf(stderr, "Errore nell'apertura di file input\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((fdo = open(argv[2], O_WRONLY | O_CREAT | O_APPEND, 0755)) < 0) {
+		fprintf(stderr, "Errore nell'apertura di file output\n");
+		exit(EXIT_FAILURE);
+	}
+	if (strlen(argv[3]) != 1) {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	if (strlen(argv[4]) != 1) {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	pid0 = getpid();
+	if (pipe(fdpipe) != 0) {
+		fprintf(stderr, "Errore nella creazione della pipe\n");
+		exit(EXIT_FAILURE);
+	}
+	pid1 = fork();
+	if (pid1 == 0) //figlio1
+			{
+		char a;
+		close(fdpipe[WRITE]);
+		signal(SIGUSR1, handlerp1);
+		while ((read(fdpipe[READ], &a, sizeof(char))) > 0) {
+						if (count==0){
+
+						}
+		}
+
+	} else if (pid1 > 0) //padre
+			{
+		pid2 = fork();
+		if (pid2 == 0) //figlio2
+		{
+			close(fdpipe[READ]);
+			char c;
+			int juststartnewline = 1, startwithhash = 0;
+			while ((read(fdi, &c, sizeof(char))) > 0) {
+				if (c == '#' && juststartnewline == 1) {
+					kill(pid1, SIGUSR1);
+					startwithhash = 1;
+				}
+				juststartnewline = 0;
+				if (startwithhash == 0) {
+					if ((write(fdpipe[WRITE], &c, sizeof(char))) < 0) {
+						fprintf(stderr, "Errore nella scrittura sulla pipe\n");
+						exit(EXIT_FAILURE);
+					}
+				}
+				if (c == '\n') {
+					juststartnewline = 1;
+					startwithhash = 0;
+				}
+			}
+			close(fdi);
+			close(fdo);
+			close(fdpipe[WRITE]);
+		exit(0);
+		} else if (pid2 > 0) { //padre
+			close(fdpipe[READ]);
+			close(fdpipe[WRITE]);
+			printf("\n[%d]: Fine esecuzione", getpid());
+		} else {
+			fprintf(stderr, "Errore nella fork 2\n");
+			exit(EXIT_FAILURE);
+		}
+	} else { //errore
+		fprintf(stderr, "Errore nella fork 1\n");
+		exit(EXIT_FAILURE);
+	}
+
+}

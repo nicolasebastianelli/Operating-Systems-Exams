@@ -1,0 +1,60 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+
+#define READ 0
+#define WRITE 1
+
+int main(int argc, char* argv[]) {
+	int fd,M,TOP,i,fdpipe[4][2],pid[4];
+	printf("[%d]: Inizio esecuzione\n\n",getpid());
+	if (argc != 4) {
+			fprintf(stderr, "Numero di argomenti errato\n");
+			exit(EXIT_FAILURE);
+		}
+	if (argv[1][0] != '/') {
+				fprintf(stderr, "File con nome non assoluto\n");
+				exit(EXIT_FAILURE);
+			}
+	if ((fd = open(argv[1], O_RDONLY)) < 0) {
+			fprintf(stderr, "errore nell'apertura di file input\n");
+			exit(EXIT_FAILURE);
+		}
+	if ((M = atoi(argv[2])) <=0 || ((M = atoi(argv[1]))%4) != 0) {
+			fprintf(stderr, "M <= 0 o non è un numero o non è multiplo di 4\n");
+			exit(EXIT_FAILURE);
+		}
+	if ((TOP = atoi(argv[1])) <= 0) {
+			fprintf(stderr, "TOP <= 0 o non è un numero\n");
+			exit(EXIT_FAILURE);
+		}
+	for(int i=0; i<4;i++)
+	{
+		if (pipe(fdpipe[i]) != 0) {
+					fprintf(stderr, "errore nella creazione della pipe %d\n", i);
+					exit(EXIT_FAILURE);
+				}
+		pid[i]=fork();
+		if(pid[i]==0) // figlio
+		{
+			close(fdpipe[i][]);
+		}
+		else if(pid[i]>0) // padre
+		{
+			close(fdpipe[i][]);
+		}
+		else
+		{
+			fprintf(stderr, "errore nella fork\n");
+					exit(EXIT_FAILURE);
+		}
+	}
+
+	printf("[%d]: Fine esecuzione\n",getpid());
+		return 0;
+}

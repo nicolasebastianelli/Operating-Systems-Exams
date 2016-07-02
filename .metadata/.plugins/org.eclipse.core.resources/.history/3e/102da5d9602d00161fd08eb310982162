@@ -1,0 +1,113 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+
+#define READ 0
+#define WRITE 1
+
+void handler1(int sig);
+void handler2(int sig);
+void handlerq(int sig);
+int n1, n2, fd1, fd2, pid0, pid1, pid2,fd;
+int main(int argc, char* argv[]) {
+	char c1, c2, c0;
+	fd= open("notifiche", O_WRONLY | O_CREAT);
+	if (argc != 6) {
+		fprintf(stderr, "Numero di argomenti errato\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((n1 = atoi(argv[1])) <= 0) {
+		fprintf(stderr, "n1 < 0 o non è un numero\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((n2 = atoi(argv[2])) <= 0) {
+		fprintf(stderr, "n2 < 0 o non è un numero\n");
+		exit(EXIT_FAILURE);
+	}
+	if (strlen(argv[4]) != 1) {
+		fprintf(stderr, "c1 non è un carattere\n");
+		exit(EXIT_FAILURE);
+	}
+	c1 = argv[4][0];
+	if (strlen(argv[5]) != 1) {
+		fprintf(stderr, "c2 non è un carattere\n");
+		exit(EXIT_FAILURE);
+	}
+	c2 = argv[5][0];
+	pid0 = getpid();
+	pid1 = fork();
+	if (pid1 > 0) //padre
+			{
+		pid2 = fork();
+		if (pid2 > 0)  //padre
+				{
+			signal(SIGUSR1, handler1);
+			signal(SIGUSR2, handler2);
+			signal(SIGQUIT,handlerq);
+			while (1) {
+				pause();
+			}
+		} else if (pid2 == 0) //figlio2
+				{
+			int s2=0;
+			if ((fd2 = open(argv[3], O_RDONLY)) < 0) {
+				fprintf(stderr, "errore nell'apertura di f da parte di P2\n");
+				exit(EXIT_FAILURE);
+			}
+			while ((read(fd2, &c0, sizeof(char))) > 0) {
+				if (c0 == c2 && s2 == n2) {
+					kill(pid0, SIGUSR2);
+				}
+				if(s2==n2)
+					s2=-1;
+				s2++;
+			}
+			kill(pid0,SIGQUIT);
+		} else {
+			fprintf(stderr, "errore nella fork di P2\n");
+			exit(EXIT_FAILURE);
+		}
+	} else if (pid1 == 0) //figlio1
+			{
+		int s1=0;
+		if ((fd1 = open(argv[3], O_RDONLY)) < 0) {
+			fprintf(stderr, "errore nell'apertura di f da parte di P1\n");
+			exit(EXIT_FAILURE);
+		}
+		while ((read(fd1, &c0, sizeof(char))) > 0) {
+			if (c0 == c1 && s1==n1) {
+				kill(pid0, SIGUSR1);
+			}
+			if(s1==n1)
+				s1=-1;
+			s1++;
+		}
+		kill(pid0,SIGQUIT);
+	} else {
+		fprintf(stderr, "errore nella fork di P1\n");
+		exit(EXIT_FAILURE);
+	}
+	return 0;
+}
+
+void handler1(int sig){
+printf("[%d]: ricevuto da [%d] segnale %d!\n",getpid(),pid1,sig);
+write(fd,&pid1,sizeof(char));
+return;
+}
+void handler2(int sig){
+	printf("[%d]: ricevuto da [%d] segnale %d!\n",getpid(),pid2,sig);
+	write(fd,&pid2,sizeof(char));
+	return;
+}
+void handlerq(int sig){
+	printf("[%d]: ricevuto segnale di terminazione\n",getpid());
+	kill(0,SIGKILL);
+	return;
+}
+

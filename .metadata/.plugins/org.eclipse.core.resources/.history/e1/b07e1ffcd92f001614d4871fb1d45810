@@ -1,0 +1,10 @@
+package esamejava20110628;
+
+public class Singoli {
+	
+	final static int uomo =1;
+	final static int donna =0;
+	
+	
+
+}

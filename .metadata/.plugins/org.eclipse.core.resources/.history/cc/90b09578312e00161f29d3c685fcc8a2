@@ -1,0 +1,14 @@
+package esamejava20120628;
+
+
+public class Main {
+	final static int n = 10;
+	final static int max = 5;
+	
+	public static void main(String args[]) {
+		System.out.println("***************** AVVIO ESECUZIONE *****************");
+		
+	}
+	
+	
+}

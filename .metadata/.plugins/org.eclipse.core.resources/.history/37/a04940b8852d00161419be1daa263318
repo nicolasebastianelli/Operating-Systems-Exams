@@ -1,0 +1,13 @@
+package esamejava20120713;
+
+public class Calzolaio extends Thread{
+	
+	Cesto c;
+
+	public Calzolaio(Cesto c) {
+		super();
+		this.c = c;
+	}
+	
+
+}

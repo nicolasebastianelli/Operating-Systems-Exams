@@ -1,0 +1,12 @@
+package esamejava20120713;
+
+public class Operaio {
+	private Cesto c;
+
+	public Operaio(Cesto c) {
+		super();
+		this.c = c;
+	}
+	
+
+}

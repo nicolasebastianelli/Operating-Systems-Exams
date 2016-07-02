@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move &apos;file.jar&apos; to &apos;esercizio11.2&apos;" description="Move &apos;file.jar&apos; to &apos;esercizio11.2&apos;" destination="/esercizio11.2" element1="/esercizio11/src/file.jar" flags="7" id="org.eclipse.ltk.core.refactoring.move.resources" resources="1" stamp="1464789300620" updateReferences="true"/>
+</session>

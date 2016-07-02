@@ -1,0 +1,10 @@
+package esamejava20120713;
+
+public class Main {
+	final static int n = 5;
+	final static int ng = 10;
+
+	public static void main(String args[]) {
+		System.out.println("***************** AVVIO ESECUZIONE *****************");
+		
+}

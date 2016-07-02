@@ -1,0 +1,12 @@
+package esamejava20110628;
+
+public class Singoli extends Thread {
+	
+	final static int uomo =1;
+	final static int donna =0;
+	private Spogliatoio s;
+	private int id;
+	
+	
+
+}

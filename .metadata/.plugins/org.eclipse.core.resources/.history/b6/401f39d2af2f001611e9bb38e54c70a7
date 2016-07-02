@@ -1,0 +1,48 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+
+#define READ 0
+#define WRITE 1
+
+
+int main(int argc, char* argv[]) {
+char buff [81];
+int fdi,fdo,pid0,pid1,pid2,fdpipe[2];
+
+if (argc != 5) {
+		fprintf(stderr, "Numero di argomenti errato\n");
+		exit(EXIT_FAILURE);
+	}
+if (argv[1][0] != '/') {
+		fprintf(stderr, "Filein con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+if (argv[2][0] != '/') {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+if ((fdi = open(argv[1], O_RDONLY)) < 0) {
+		fprintf(stderr, "Errore nell'apertura di file input\n");
+		exit(EXIT_FAILURE);
+	}
+if ((fdo = open(argv[2], O_WRONLY | O_CREAT | O_APPEND, 0755)) < 0) {
+		fprintf(stderr, "Errore nell'apertura di file output\n");
+		exit(EXIT_FAILURE);
+	}
+if (strlen(argv[3])!= 1) {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+if (strlen(argv[4]) != 1) {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+pid0=getpid();
+
+}

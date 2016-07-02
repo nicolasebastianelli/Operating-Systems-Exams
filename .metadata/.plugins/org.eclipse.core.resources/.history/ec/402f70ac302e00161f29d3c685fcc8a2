@@ -1,0 +1,24 @@
+package esamejava20120628;
+
+import java.util.Random;
+
+public class Visitatori extends Thread{
+	private Ponte p;
+	private Random r1;
+	private Random r2;
+	private int id;
+
+	public Visitatori(Ponte p, int id) {
+		super();
+		this.p = p;
+		this.id=id;
+	}
+
+	public void run() {
+		while (true) {
+			r1= new Random(System.currentTimeMillis()*id);
+			r2= new Random();
+			
+		}
+	}
+}

@@ -1,0 +1,12 @@
+decollo 0 Wed Jun 01 18:46:47 CEST 2016
+atterraggio 2 Wed Jun 01 18:46:47 CEST 2016
+atterraggio 4 Wed Jun 01 18:46:47 CEST 2016
+atterraggio 9 Wed Jun 01 18:46:47 CEST 2016
+decollo 1 Wed Jun 01 18:46:47 CEST 2016
+decollo 3 Wed Jun 01 18:46:47 CEST 2016
+decollo 5 Wed Jun 01 18:46:47 CEST 2016
+decollo 6 Wed Jun 01 18:46:47 CEST 2016
+decollo 7 Wed Jun 01 18:46:47 CEST 2016
+ST 2016
+2 CEST 2016
+9 Wed Jun 01 18:44:28 CEST 2016

@@ -1,0 +1,14 @@
+package esamejava20120713;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Cesto {
+	private Lock lock = new ReentrantLock();
+	private Condition d1= lock.newCondition();
+	private Condition d2 = lock.newCondition();
+	private Condition s1 = lock.newCondition();
+	private Condition s2 = lock.newCondition();
+	private Condition operaio = lock.newCondition();
+}

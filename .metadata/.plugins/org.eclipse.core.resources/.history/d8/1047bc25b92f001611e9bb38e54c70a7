@@ -1,0 +1,157 @@
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+
+#define READ 0
+#define WRITE 1
+
+void handlerp11(int sig);
+void handlerp12(int sig);
+int count = 0, fdpipe[2], fdi, fdo;
+char c1, c2;
+int main(int argc, char* argv[]) {
+	char buff[81];
+	int pid0, pid1, pid2,status;
+	printf("[%d]: Inizio esecuzione\n\n", getpid());
+	if (argc != 5) {
+		fprintf(stderr, "Numero di argomenti errato\n");
+		exit(EXIT_FAILURE);
+	}
+	if (argv[1][0] != '/') {
+		fprintf(stderr, "Filein con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	if (argv[2][0] != '/') {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((fdi = open(argv[1], O_RDONLY)) < 0) {
+		fprintf(stderr, "Errore nell'apertura di file input\n");
+		exit(EXIT_FAILURE);
+	}
+	if ((fdo = open(argv[2], O_WRONLY | O_CREAT | O_APPEND, 0755)) < 0) {
+		fprintf(stderr, "Errore nell'apertura di file output\n");
+		exit(EXIT_FAILURE);
+	}
+	if (strlen(argv[3]) != 1) {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	if (strlen(argv[4]) != 1) {
+		fprintf(stderr, "Fileout con nome non assoluto\n");
+		exit(EXIT_FAILURE);
+	}
+	c1 = argv[3][0];
+	c2 = argv[4][0];
+	pid0 = getpid();
+	if (pipe(fdpipe) != 0) {
+		fprintf(stderr, "Errore nella creazione della pipe\n");
+		exit(EXIT_FAILURE);
+	}
+	pid1 = fork();
+	if (pid1 == 0) //figlio1
+			{
+		close(fdpipe[WRITE]);
+		signal(SIGUSR1, handlerp11);
+		signal(SIGUSR2, handlerp12);
+		while (1) {
+			pause();
+		}
+
+	} else if (pid1 > 0) //padre
+			{
+		pid2 = fork();
+		if (pid2 == 0) //figlio2
+				{
+			close(fdpipe[READ]);
+			char c;
+			int juststartnewline = 1, startwithhash = 0;
+			while ((read(fdi, &c, sizeof(char))) > 0) {
+				if (c == '#' && juststartnewline == 1) {
+					kill(pid1, SIGUSR1);
+					startwithhash = 1;
+				}
+				juststartnewline = 0;
+				if (startwithhash == 0) {
+					if ((write(fdpipe[WRITE], &c, sizeof(char))) < 0) {
+						fprintf(stderr, "Errore nella scrittura sulla pipe\n");
+						exit(EXIT_FAILURE);
+					}
+				}
+				if (c == '\n') {
+					juststartnewline = 1;
+					startwithhash = 0;
+				}
+			}
+			kill(pid1, SIGUSR2);
+			close(fdi);
+			close(fdo);
+			close(fdpipe[WRITE]);
+			exit(0);
+		} else if (pid2 > 0) { //padre
+			close(fdpipe[READ]);
+			close(fdpipe[WRITE]);
+			for(int i=0;i<2;i++){
+			wait(&status);
+			    if (WIFEXITED(status)) {
+			        printf("[%d]: Figlio terminato volontariamente con stato: %d\n",getpid(),
+			               WEXITSTATUS(status));
+			    } else if (WIFSIGNALED(status)) {
+			        printf("[%d]: Figlio terminato volontariamente con stato: %d\n",getpid(),
+			               WEXITSTATUS(status));
+			    }
+			}
+			printf("\n[%d]: Fine esecuzione", getpid());
+		} else {
+			fprintf(stderr, "Errore nella fork 2\n");
+			exit(EXIT_FAILURE);
+		}
+	} else { //errore
+		fprintf(stderr, "Errore nella fork 1\n");
+		exit(EXIT_FAILURE);
+	}
+
+}
+
+void handlerp11(int sig) {
+	count++;
+	return;
+}
+
+void handlerp12(int sig) {
+	char a, output[200], c;
+	int occurrency = 0, n = 0;
+	if (count % 2 == 0) {
+		c = c1;
+	} else {
+		c = c2;
+	}
+	while ((read(fdpipe[READ], &a, sizeof(char))) > 0) {
+		if (a == c) {
+			occurrency++;
+		}
+		if (a == '\n') {
+			if(occurrency>=15)
+			{
+				n++;
+			}
+			occurrency=0;
+		}
+	}
+	fprintf(output,"L'input contiene %d righe con almeno 15 occorrenze del carattere %c”, dove %d è il risultato calcolato.\n",n,c,n);
+	printf("%s",output);
+	if ((write(fdo, &output, strlen(output) * sizeof(char))) < 0) {
+		fprintf(stderr, "Errore nella scrittura sulla pipe\n");
+		exit(EXIT_FAILURE);
+	}
+	close(fdi);
+	close(fdo);
+	close(fdpipe[READ]);
+	exit(0);
+	return;
+}

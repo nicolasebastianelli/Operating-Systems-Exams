@@ -1,0 +1,36 @@
+package esamejava20110628;
+
+import java.util.Random;
+
+public class Gruppi extends Thread{
+	private Spogliatoio s;
+	private int id;
+	private Random r;
+	
+	public Gruppi(Spogliatoio s, int id) {
+		super();
+		this.s = s;
+		this.id = id;
+		r= new Random(System.currentTimeMillis()*id);
+	}
+	
+	public void run() {
+		int numerog = r.nextInt(10) +1;
+		System.out.println("[Singolo]: Creato gruppo con id "+id+" e "+numerog+" persone");
+		while(true)
+		{
+			try {
+				s.entraG(numerog, id);
+				Thread.sleep(2000);
+				s.esceG(numerog, id);
+				Thread.sleep(6000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+
+}

@@ -1,0 +1,26 @@
+package esamejava20110628;
+
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Spogliatoio {
+	private Lock lock = new ReentrantLock();
+	private Condition su = lock.newCondition();
+	private Condition sd = lock.newCondition();
+	private Condition g = lock.newCondition();
+	private int sosp_su = 0;
+	private int sosp_sd = 0;
+	private int sosp_g = 0;
+	private int max;
+	private int cabine;
+	private int nSpoglia = 0;
+	
+	
+	public Spogliatoio(int max, int cabine) {
+		super();
+		this.max = max;
+		this.cabine = cabine;
+	}
+	
+}

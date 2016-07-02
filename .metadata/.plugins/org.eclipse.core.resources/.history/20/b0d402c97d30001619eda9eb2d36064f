@@ -1,0 +1,23 @@
+package esamejava20150713;
+
+import java.util.Random;
+
+public class Piatti extends Thread{
+	
+	private Barbeque b;
+	private int id;
+	private Random r;
+	public Piatti(Barbeque b, int id) {
+		super();
+		this.b = b;
+		this.id = id;
+		r= new Random(System.currentTimeMillis()*id);
+	}
+	
+	public void run()
+	{
+		
+	}
+	
+
+}
